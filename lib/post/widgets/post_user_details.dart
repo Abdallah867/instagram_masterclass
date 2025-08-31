@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:masterclass/post/view.dart';
 import 'package:masterclass/post/widgets/account_details.dart';
 import 'package:masterclass/post/widgets/follow_widget.dart';
+import 'package:masterclass/post/widgets/instagram_card.dart';
 
 class PostUserDetails extends StatelessWidget {
-  const PostUserDetails({super.key});
+  final Post post;
+  const PostUserDetails({super.key, required this.post});
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +14,7 @@ class PostUserDetails extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [AccountDetails(), FollowWidget()],
+        children: [AccountDetails(username: post.username), FollowWidget()],
       ),
     );
   }

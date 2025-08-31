@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class AccountDetails extends StatelessWidget {
-  const AccountDetails({super.key});
+  final String username;
+  const AccountDetails({super.key, required this.username});
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +14,7 @@ class AccountDetails extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'acording_tips',
+              username,
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
             Text(
