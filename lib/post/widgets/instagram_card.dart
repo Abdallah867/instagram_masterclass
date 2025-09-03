@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:masterclass/post/models/post.dart';
 import 'package:masterclass/post/widgets/post_user_details.dart';
 
 import 'actions_widget.dart';
@@ -43,24 +44,4 @@ class InstagramCard extends StatelessWidget {
       ],
     );
   }
-}
-
-class Post {
-  final String username;
-  final String userImageUrl;
-  final String? postImageUrl;
-  final String description;
-  final int likesCount;
-  final int commentsCount;
-  final int sharesCount;
-
-  Post({
-    required this.username,
-    required this.userImageUrl,
-    this.postImageUrl,
-    required this.description,
-    required this.likesCount,
-    required this.commentsCount,
-    required this.sharesCount,
-  });
 }

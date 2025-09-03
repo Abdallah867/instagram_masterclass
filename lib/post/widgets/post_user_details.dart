@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:masterclass/post/models/post.dart';
 import 'package:masterclass/post/view.dart';
 import 'package:masterclass/post/widgets/account_details.dart';
 import 'package:masterclass/post/widgets/follow_widget.dart';
