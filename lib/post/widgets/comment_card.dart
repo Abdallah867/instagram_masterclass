@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:masterclass/post/widgets/actions_widget.dart';
 import 'package:masterclass/post/widgets/comment_user_details.dart';
 
 class CommentCard extends StatelessWidget {
-  const CommentCard({super.key});
+  final Comment comment;
+  const CommentCard({super.key, required this.comment});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +24,7 @@ class CommentCard extends StatelessWidget {
                   Container(
                     constraints: BoxConstraints(maxWidth: 240),
                     child: Text(
-                      'text text text text text text text text text text text',
+                      comment.content,
                       style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
                   ),
@@ -40,7 +42,10 @@ class CommentCard extends StatelessWidget {
               ),
             ],
           ),
-          LikeWidget(),
+          LikeWidget(
+            commentId: int.parse(comment.id),
+            likeCount: comment.likesCount,
+          ),
         ],
       ),
     );
@@ -48,29 +53,43 @@ class CommentCard extends StatelessWidget {
 }
 
 class LikeWidget extends StatefulWidget {
-  const LikeWidget({super.key});
+  final int likeCount;
+  final int commentId;
+  const LikeWidget({
+    super.key,
+    required this.likeCount,
+    required this.commentId,
+  });
 
   @override
   State<LikeWidget> createState() => _LikeWidgetState();
 }
 
 class _LikeWidgetState extends State<LikeWidget> {
-  int likeCount = 0;
+  late int likeCount;
   bool isLiked = false;
+  @override
+  void initState() {
+    likeCount = widget.likeCount;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         IconButton(
-          onPressed: () {
+          onPressed: () async {
             setState(() {
               if (isLiked) {
                 likeCount--;
               } else {
                 likeCount++;
+                isLiked = !isLiked;
               }
-              isLiked = !isLiked;
             });
+
+            await updateComment(widget.commentId, likeCount);
           },
           icon: Icon(
             isLiked ? Icons.favorite : Icons.favorite_border_outlined,
@@ -79,6 +98,22 @@ class _LikeWidgetState extends State<LikeWidget> {
         ),
         Text('$likeCount', style: TextStyle(color: Colors.grey)),
       ],
+    );
+  }
+}
+
+class Comment {
+  final String id;
+  final String content;
+  final int likesCount;
+
+  Comment({required this.id, required this.content, required this.likesCount});
+
+  factory Comment.fromJson(json) {
+    return Comment(
+      id: json['id'].toString(),
+      content: json['content'],
+      likesCount: json['likesCount'],
     );
   }
 }

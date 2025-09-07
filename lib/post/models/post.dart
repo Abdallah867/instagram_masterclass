@@ -24,13 +24,19 @@ class Post {
   factory Post.fromJson(Map<String, dynamic> json) {
     return Post(
       id: json['id'].toString(),
-      userId: json['userId'].toString(),
-      username: json['title'],
+      userId: json['userId'] ?? 'ab',
+      username: json['title'] ?? 'a',
       userImageUrl: '',
-      description: json['body'],
-      likesCount: 0,
-      commentsCount: 0,
-      sharesCount: 0,
+      description: json['description'] ?? 0,
+      likesCount: json['likes'] ?? 0,
+      commentsCount: json['comments'] ?? 0,
+      sharesCount: json['shares'] ?? 0,
     );
   }
+
+  //   factory Post.toJson(Post post) {
+  //   return {
+  //     'id':
+  //   }
+  // }
 }
