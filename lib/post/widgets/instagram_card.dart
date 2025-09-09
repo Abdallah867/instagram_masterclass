@@ -14,7 +14,8 @@ class InstagramCard extends StatelessWidget {
       children: [
         PostUserDetails(post: post),
         Image.network(
-          'https://assets.mediamodifier.com/mockups/5eb298d9344e64249900dbbc/instagram-post-mockup-maker.jpg',
+          post.postImageUrl ??
+              'https://assets.mediamodifier.com/mockups/5eb298d9344e64249900dbbc/instagram-post-mockup-maker.jpg',
           height: 400,
           fit: BoxFit.cover,
         ),

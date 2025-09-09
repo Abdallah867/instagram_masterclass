@@ -27,6 +27,7 @@ class Post {
       userId: json['userId'] ?? 'ab',
       username: json['title'] ?? 'a',
       userImageUrl: '',
+      postImageUrl: json['postImageUrl'],
       description: json['description'] ?? 0,
       likesCount: json['likes'] ?? 0,
       commentsCount: json['comments'] ?? 0,

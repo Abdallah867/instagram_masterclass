@@ -137,6 +137,15 @@ class _CommentListState extends State<CommentList> {
                               commentController.text,
                             );
                             commentController.clear();
+                            setState(() {
+                              comments.add(
+                                Comment(
+                                  id: '5',
+                                  content: 'content',
+                                  likesCount: 0,
+                                ),
+                              );
+                            });
                           },
                           icon: Icon(Icons.send),
                         ),
