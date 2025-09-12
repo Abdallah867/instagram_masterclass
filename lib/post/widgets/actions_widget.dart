@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:masterclass/main.dart';
 import 'package:masterclass/post/models/post.dart';
 import 'package:masterclass/post/widgets/comment_card.dart';
 import 'package:masterclass/post/widgets/custom_action.dart';
@@ -56,6 +60,37 @@ class ActionsWidget extends StatelessWidget {
     );
   }
 }
+
+// @riverpod
+// class CommentController extends _$CommentController {
+//   @override
+//   Future<List<Comment>> build(String someValue) async {
+//     return fetchComments(int.parse(postId));
+//   }
+
+//   Future<List<Comment>> fetchComments(int postId) async {
+//     final supabase = ref.read(supabaseClientProvider);
+//     final response = await supabase
+//         .from('comments')
+//         .select()
+//         .eq('post_id', postId)
+//         .order('created_at', ascending: false);
+//     return response.map((comment) => Comment.fromJson(comment)).toList();
+//   }
+
+//   addComment() async {
+//     final response = await Supabase.instance.client.from('comments').insert({
+//       'content': content,
+//       'post_id': postId,
+//     });
+//     state = [...state, comment];
+//   }
+
+//   @override
+//   update() {}
+
+//   delete() {}
+// }
 
 class CommentList extends StatefulWidget {
   final String postId;
@@ -161,15 +196,11 @@ class _CommentListState extends State<CommentList> {
 }
 
 Future<List<Comment>> fetchComments(int postId) async {
-  try {
-    final response = await Supabase.instance.client
-        .from('comments')
-        .select()
-        .eq('post_id', postId);
-    return response.map((comment) => Comment.fromJson(comment)).toList();
-  } catch (e) {
-    throw Exception('Error fetching Comments: $e');
-  }
+  final response = await Supabase.instance.client
+      .from('comments')
+      .select()
+      .eq('post_id', postId);
+  return response.map((comment) => Comment.fromJson(comment)).toList();
 }
 
 Future<void> addComment(int postId, String content) async {

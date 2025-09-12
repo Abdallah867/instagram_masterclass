@@ -104,23 +104,38 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             const SizedBox(height: 12),
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () async {
-                  final authController = ref.read(
-                    authControllerProvider.notifier,
-                  );
-                  isSignedUp
-                      ? await authController.signUp(
-                        emailController.text,
-                        passwordController.text,
-                      )
-                      : await authController.signIn(
-                        emailController.text,
-                        passwordController.text,
+              child: Consumer(
+                builder: (context, ref, child) {
+                  final auth = ref.watch(authControllerProvider);
+                  return auth.when(
+                    data: (_) {
+                      return ElevatedButton(
+                        onPressed: () async {
+                          final authController = ref.read(
+                            authControllerProvider.notifier,
+                          );
+                          isSignedUp
+                              ? await authController.signUp(
+                                emailController.text,
+                                passwordController.text,
+                              )
+                              : await authController.signIn(
+                                emailController.text,
+                                passwordController.text,
+                              );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                        ),
+                        child: isSignedUp ? Text('Sign Up') : Text('Log In'),
                       );
+                    },
+
+                    loading:
+                        () => const Center(child: CircularProgressIndicator()),
+                    error: (error, stackTrace) => Text('Error: $error'),
+                  );
                 },
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
-                child: isSignedUp ? Text('Sign Up') : Text('Log In'),
               ),
             ),
             const SizedBox(height: 12),
