@@ -1,21 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:masterclass/auth/auth_controller.dart';
 import 'package:masterclass/auth/login_functions.dart';
 import 'package:masterclass/post/view.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreen> {
   bool isSignedUp = false;
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(authControllerProvider, (previous, current) {
+      current.when(
+        data: (_) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('Success 🎉')));
+
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const PostsView()),
+          );
+        },
+        loading: () {},
+        error: (error, stackTrace) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('Error: $error')));
+        },
+      );
+    });
+
     return Scaffold(
       body: Container(
         padding: const EdgeInsets.all(24),
@@ -84,43 +106,18 @@ class _LoginScreenState extends State<LoginScreen> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () async {
-                  final result =
-                      isSignedUp
-                          ? await signUp(
-                            emailController.text,
-                            passwordController.text,
-                          )
-                          : await signIn(
-                            emailController.text,
-                            passwordController.text,
-                          );
-
-                  result.fold(
-                    (error) {
-                      ScaffoldMessenger.of(
-                        context,
-                      ).showSnackBar(SnackBar(content: Text(error)));
-                    },
-                    (user) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute<void>(
-                          builder: (context) => const PostsView(),
-                        ),
-                      );
-
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Row(
-                            children: [
-                              Text('Signed In Succesfully'),
-                              Text('${user.email}'),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
+                  final authController = ref.read(
+                    authControllerProvider.notifier,
                   );
+                  isSignedUp
+                      ? await authController.signUp(
+                        emailController.text,
+                        passwordController.text,
+                      )
+                      : await authController.signIn(
+                        emailController.text,
+                        passwordController.text,
+                      );
                 },
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
                 child: isSignedUp ? Text('Sign Up') : Text('Log In'),

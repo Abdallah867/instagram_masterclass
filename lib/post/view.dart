@@ -1,17 +1,23 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
+import 'package:masterclass/auth/auth_controller.dart';
 import 'package:masterclass/post/models/post.dart';
 import 'package:masterclass/post/widgets/instagram_card.dart';
 import 'package:masterclass/shared/bottom_navigation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class PostsView extends StatelessWidget {
+final postsProvider = FutureProvider<List<Post>>((ref) async {
+  return fetchPosts();
+});
+
+class PostsView extends ConsumerWidget {
   const PostsView({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       bottomNavigationBar: BottomNavigation(),
 
@@ -19,27 +25,34 @@ class PostsView extends StatelessWidget {
         leading: Icon(Icons.arrow_back_ios),
         title: Text('Explore', style: TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: false,
-        actions: [Icon(Icons.camera_alt_outlined)],
+        actions: [
+          IconButton(
+            onPressed: () {
+              ref.read(authControllerProvider.notifier).signOut();
+            },
+            icon: Icon(Icons.logout),
+          ),
+        ],
       ),
 
-      body: FutureBuilder<List<Post>>(
-        future: fetchPosts(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text("Error: ${snapshot.error}"));
-          } else {
-            final posts = snapshot.data ?? [];
-            return ListView.separated(
-              separatorBuilder: (context, index) => Divider(height: 12),
-              itemBuilder: (context, index) {
-                final post = posts[index];
-                return InstagramCard(post: post);
-              },
-              itemCount: posts.length,
-            );
-          }
+      body: Consumer(
+        builder: (context, ref, child) {
+          final AsyncValue<List<Post>> postsAsync = ref.watch(postsProvider);
+
+          return postsAsync.when(
+            data:
+                (posts) => ListView.separated(
+                  separatorBuilder:
+                      (context, index) => const Divider(height: 12),
+                  itemBuilder: (context, index) {
+                    final post = posts[index];
+                    return InstagramCard(post: post);
+                  },
+                  itemCount: posts.length,
+                ),
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (err, stack) => Center(child: Text("Error: $err")),
+          );
         },
       ),
     );
@@ -47,31 +60,27 @@ class PostsView extends StatelessWidget {
 }
 
 Future<List<Post>> fetchPosts() async {
-  try {
-    final response = await Supabase.instance.client.from('posts').select();
-    return response.map((post) => Post.fromJson(post)).toList();
-  } catch (e) {
-    throw Exception('Error fetching posts: $e');
-  }
+  final response = await Supabase.instance.client.from('posts').select();
+  return response.map((post) => Post.fromJson(post)).toList();
 }
 
-Future<List<Post>> fetchPost() async {
-  try {
-    final response = await http
-        .get(Uri.parse('https://jsonplaceholder.typicode.com/posts'))
-        .timeout(Duration(seconds: 5));
+// Future<List<Post>> fetchPost() async {
+//   try {
+//     final response = await http
+//         .get(Uri.parse('https://jsonplaceholder.typicode.com/posts'))
+//         .timeout(Duration(seconds: 5));
 
-    if (response.statusCode == 200) {
-      final List<dynamic> data = json.decode(response.body);
+//     if (response.statusCode == 200) {
+//       final List<dynamic> data = json.decode(response.body);
 
-      return data.map((post) => Post.fromJson(post)).toList();
-    } else {
-      throw Exception('Failed to load posts');
-    }
-  } catch (e) {
-    throw Exception('Error fetching posts: $e');
-  }
-}
+//       return data.map((post) => Post.fromJson(post)).toList();
+//     } else {
+//       throw Exception('Failed to load posts');
+//     }
+//   } catch (e) {
+//     throw Exception('Error fetching posts: $e');
+//   }
+// }
 
 
 

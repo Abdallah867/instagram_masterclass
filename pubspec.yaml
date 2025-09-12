@@ -32,13 +32,16 @@ dependencies:
   dartz: ^0.10.1
   flutter:
     sdk: flutter
+  flutter_riverpod: ^2.6.1
   http: ^1.5.0
   supabase_flutter: ^2.0.0
 
 dev_dependencies:
+  custom_lint: ^0.7.6
   flutter_lints: ^5.0.0
   flutter_test:
     sdk: flutter
+  riverpod_lint: ^2.6.5
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
