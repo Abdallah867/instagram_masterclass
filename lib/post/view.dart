@@ -63,32 +63,3 @@ Future<List<Post>> fetchPosts() async {
   final response = await Supabase.instance.client.from('posts').select();
   return response.map((post) => Post.fromJson(post)).toList();
 }
-
-// Future<List<Post>> fetchPost() async {
-//   try {
-//     final response = await http
-//         .get(Uri.parse('https://jsonplaceholder.typicode.com/posts'))
-//         .timeout(Duration(seconds: 5));
-
-//     if (response.statusCode == 200) {
-//       final List<dynamic> data = json.decode(response.body);
-
-//       return data.map((post) => Post.fromJson(post)).toList();
-//     } else {
-//       throw Exception('Failed to load posts');
-//     }
-//   } catch (e) {
-//     throw Exception('Error fetching posts: $e');
-//   }
-// }
-
-
-
-      // child: ListView.separated(
-      //   separatorBuilder: (context, index) => Divider(height: 12),
-      //   itemBuilder: (context, index) {
-      //     final post = futurePosts[index];
-      //     return InstagramCard(post: post);
-      //   },
-      //   itemCount: posts.length,
-      // ),

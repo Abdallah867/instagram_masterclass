@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:masterclass/post/models/post.dart';
 import 'package:masterclass/post/widgets/post_user_details.dart';
 
-import 'actions_widget.dart';
+import '../../comments/widgets/actions_widget.dart';
+
+final postProvider = Provider<Post>(
+  (ref) => throw UnimplementedError(),
+); // check the concept of scope provider
 
 class InstagramCard extends StatelessWidget {
   final Post post;

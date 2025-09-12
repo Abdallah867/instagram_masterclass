@@ -4,7 +4,6 @@ import 'package:masterclass/auth/login_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'post/view.dart';
-import 'shared/bottom_navigation.dart';
 
 final supabaseClientProvider = Provider<SupabaseClient>((ref) {
   return Supabase.instance.client;
