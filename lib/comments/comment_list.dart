@@ -16,7 +16,9 @@ class _CommentListState extends ConsumerState<CommentList> {
 
   @override
   Widget build(BuildContext context) {
-    final commentsAsync = ref.watch(commentsControllerProvider(widget.postId));
+    final commentsAsync = ref.watch(
+      commentsControllerProvider(widget.postId.toString()),
+    );
 
     return SafeArea(
       child: commentsAsync.when(
@@ -34,7 +36,10 @@ class _CommentListState extends ConsumerState<CommentList> {
                               (context, index) => const Divider(height: 12),
                           itemBuilder: (context, index) {
                             final comment = comments[index];
-                            return CommentCard(comment: comment);
+                            return CommentCard(
+                              key: ValueKey(comment.id),
+                              comment: comment,
+                            );
                           },
                           itemCount: comments.length,
                         ),
@@ -56,9 +61,11 @@ class _CommentListState extends ConsumerState<CommentList> {
 
                       await ref
                           .read(
-                            commentsControllerProvider(widget.postId).notifier,
+                            commentsControllerProvider(
+                              widget.postId.toString(),
+                            ).notifier,
                           )
-                          .addComment(widget.postId, text);
+                          .addComment(widget.postId.toString(), text);
 
                       commentController.clear();
                     },

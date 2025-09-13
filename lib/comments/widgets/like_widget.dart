@@ -42,8 +42,8 @@ class _LikeWidgetState extends ConsumerState<LikeWidget> {
             });
 
             await ref
-                .read(commentsControllerProvider(widget.commentId).notifier)
-                .updateComment(int.parse(post.id), widget.commentId, likeCount);
+                .read(commentsControllerProvider(post.id).notifier)
+                .updateComment(post.id, widget.commentId, likeCount);
           },
           icon: Icon(
             isLiked ? Icons.favorite : Icons.favorite_border_outlined,
